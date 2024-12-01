@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <script src="js/vue.js"></script>
+    <style></style>
+  </head>
+  <body>
+    <div id="changeColor" class="container">
+      <div :style="styleColor">
+        <span style="font-size: 100px; line-height: 400px"
+          >{{ food[colorx] }}</span
+        >
+      </div>
+
+      <div>
+        <label for="">速度：</label>
+        <input type="number" v-model="speed" /><span>ms</span>
+        <button
+          style="margin-left: 60px"
+          class="btn btn-success"
+          @click="changeStatus()"
+        >
+          {{status_display}}
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const app = Vue.createApp({
+        data() {
+          return {
+            colorx: 1,
+            colorList: [
+              "Red",
+              "Orange",
+              "Yellow",
+              "Green",
+              "Cyan",
+              "Blue",
+              "Purple",
+            ],
+            food: [
+              "宫保鸡丁",
+              "麻婆豆腐",
+              "红烧肉",
+              "清蒸鲈鱼",
+              "地三鲜",
+              "北京烤鸭",
+              "鱼香茄子",
+            ],
+            styleColor: {
+              width: "400px",
+              height: "400px",
+              color: "red", // 初始化背景颜色为red
+              //background-color: 'black',
+            },
+            status: false,
+            isRunning: false,
+            speed: 1000,
+          };
+        },
+        methods: {
+          changeStatus() {
+            this.status = !this.status;
+
+            if (this.status === true) {
+              this.interval = setInterval(() => {
+                this.colorx = (this.colorx + 1) % this.colorList.length;
+                this.styleColor.color = this.colorList[this.colorx];
+              }, this.speed);
+              this.isRunning = true;
+            } else if (this.isRunning === true) {
+              clearInterval(this.interval);
+              this.interval = null;
+              this.isRunning = false;
+            }
+          },
+        },
+
+        computed: {
+          status_display: function () {
+            return this.status ? "停止" : "开始";
+          },
+        },
+        beforeUnmount() {
+          // 清除定时器，避免内存泄漏
+          clearInterval(this.interval);
+        },
+      });
+
+      app.mount("#changeColor");
+    </script>
+  </body>
+</html>
